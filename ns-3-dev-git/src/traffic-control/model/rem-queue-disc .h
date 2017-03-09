@@ -38,8 +38,6 @@
 #include "ns3/event-id.h"
 #include "ns3/random-variable-stream.h"
 
-//#define BURST_RESET_TIMEOUT 1.5
-
 namespace ns3 {
 
 class TraceContainer;
@@ -75,7 +73,7 @@ public:
   typedef struct
   {
     uint32_t unforcedDrop;      //!< Early probability drops: proactive
-    uint32_t qLimDrop;       //!< Drops due to queue limit: reactive
+    uint32_t qLimDrop;          //!< Drops due to queue limit: reactive
   } Stats;
 
 
@@ -144,10 +142,10 @@ private:
   /**
    * \brief Check if a packet needs to be dropped due to probability drop
    * \param item queue item
-   * \param qSize queue size
+   * \param qLen queue length
    * \returns 0 for no drop, 1 for drop
    */
-  bool DropEarly (Ptr<QueueDiscItem> item, uint32_t qSize);
+  bool DropEarly (Ptr<QueueDiscItem> item, uint32_t qLen);
   /**
    * Compute the average input rate, the price and the marking probability
    * Probability is updated periodically after m_tUpdate time
@@ -164,11 +162,9 @@ private:
   Time m_tUpdate;                               //!< Time period after which RunUpdateRule () is called
   uint32_t m_bo;                                //!< Target queue length
   uint32_t m_queueLimit;                        //!< Queue limit in bytes / packets
-  double m_ptc;                                  //!< Bandwidth in packets per second
+  double m_ptc;                                 //!< Bandwidth in packets per second
   Time m_sUpdate;                               //!< Start time of the update timer
-  
-  Time m_qDelayRef;                             //!< Desired queue delay
-  
+   
   // ** Variables maintained by REM
   double m_vPl;                                 //!< Variable to compute the link price
   double m_vProb;                               //!< Probability of packet dropping
