@@ -159,7 +159,7 @@ private:
   double m_gamma;                               //!< Weight assigned to deviation of queue length from target and input rate from capacity
   double m_phi;                                 //!< Constant for calculation of probability
   uint32_t m_meanPktSize;                       //!< Average packet size in bytes
-  Time m_tUpdate;                               //!< Time period after which RunUpdateRule () is called
+  Time m_updtime;                               //!< Time period after which RunUpdateRule () is called
   uint32_t m_bo;                                //!< Target queue length
   uint32_t m_queueLimit;                        //!< Queue limit in bytes / packets
   double m_ptc;                                 //!< Bandwidth in packets per second
