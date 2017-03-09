@@ -151,6 +151,7 @@ private:
    * Probability is updated periodically after m_tUpdate time
    */
   void RunUpdateRule ();
+  
   Stats m_stats;                                //!< REM statistics
 
   // ** Variables supplied by user
