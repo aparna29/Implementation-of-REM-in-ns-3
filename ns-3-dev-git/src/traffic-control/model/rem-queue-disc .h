@@ -167,7 +167,7 @@ private:
   Time m_sUpdate;                               //!< Start time of the update timer
    
   // ** Variables maintained by REM
-  double m_vPl;                                 //!< Variable to compute the link price
+  double m_vLp;                                 //!< Variable to compute the link price
   double m_vProb;                               //!< Probability of packet dropping
   double m_vIn;                                 //!< Variable used in computing the input rate
   double m_vAve;                                //!< Variable to store average input rate
