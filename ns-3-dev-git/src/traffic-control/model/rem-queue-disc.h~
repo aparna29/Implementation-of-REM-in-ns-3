@@ -148,7 +148,7 @@ private:
 
   /**
    * Compute the average input rate, the price and the dropping probability
-   * Probability is updated periodically after m_updateInterval time
+   * Probability is updated periodically after m_updTime time
    */
   void RunUpdateRule ();
 
