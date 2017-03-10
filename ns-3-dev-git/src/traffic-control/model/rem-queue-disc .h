@@ -148,7 +148,7 @@ private:
   bool DropEarly (Ptr<QueueDiscItem> item, uint32_t qLen);
   /**
    * Compute the average input rate, the price and the marking probability
-   * Probability is updated periodically after m_tUpdate time
+   * Probability is updated periodically after m_updTime time
    */
   void RunUpdateRule ();
   
