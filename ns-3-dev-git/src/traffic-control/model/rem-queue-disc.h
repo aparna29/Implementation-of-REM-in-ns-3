@@ -160,8 +160,8 @@ private:
   double m_gamma;                               //!< Weight assigned to deviation of queue length from target and input rate from capacity
   double m_phi;                                 //!< Constant for calculation of probability
   uint32_t m_meanPktSize;                       //!< Average packet size in bytes
-  Time m_updTime;                               //!< Time period after which RunUpdateRule () is called
-  uint32_t m_target;                            //!< Target queue length
+  Time m_updateInterval;                        //!< Time period after which RunUpdateRule () is called
+  uint32_t m_target;                            //!< Target queue length (or target buffer occupancy as mentioned in REM paper)
   uint32_t m_queueLimit;                        //!< Queue limit in bytes / packets
   double m_ptc;                                 //!< Bandwidth in packets per second
 
@@ -170,7 +170,7 @@ private:
   double m_vProb;                               //!< Probability of packet dropping
   double m_vIn;                                 //!< Variable used in computing the input rate
   double m_vAve;                                //!< Variable to store the average input rate
-  uint32_t m_vCount;                            //!< Number of bytes or packets arriving at the link during one update time interval
+  uint32_t m_vCount;                            //!< Number of bytes or packets arriving at the link during each update time interval
   uint32_t m_bCount;                            //!< Queue length in bytes
 
   EventId m_rtrsEvent;                          //!< Event used to decide the decision of interval of drop probability calculation
@@ -179,4 +179,4 @@ private:
 
 }    // namespace ns3
 
-#endif
+#endif // REM_QUEUE_DISC_H
