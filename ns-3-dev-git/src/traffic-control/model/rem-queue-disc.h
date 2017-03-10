@@ -151,7 +151,7 @@ private:
    * Probability is updated periodically after m_updTime time
    */
   void RunUpdateRule ();
-  
+
   Stats m_stats;                                //!< REM statistics
 
   // ** Variables supplied by user
@@ -164,7 +164,7 @@ private:
   uint32_t m_target;                            //!< Target queue length
   uint32_t m_queueLimit;                        //!< Queue limit in bytes / packets
   double m_ptc;                                 //!< Bandwidth in packets per second
-   
+
   // ** Variables maintained by REM
   double m_vLp;                                 //!< Variable to compute the link price
   double m_vProb;                               //!< Probability of packet dropping
@@ -172,11 +172,11 @@ private:
   double m_vAve;                                //!< Variable to store the average input rate
   uint32_t m_vCount;                            //!< Number of bytes or packets arriving at the link during one update time interval
   uint32_t m_bCount;                            //!< Queue length in bytes
-  
+
   EventId m_rtrsEvent;                          //!< Event used to decide the decision of interval of drop probability calculation
   Ptr<UniformRandomVariable> m_uv;              //!< Rng stream
 };
 
-};   // namespace ns3
+}    // namespace ns3
 
 #endif
