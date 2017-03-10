@@ -161,7 +161,7 @@ private:
   double m_phi;                                 //!< Constant for calculation of probability
   uint32_t m_meanPktSize;                       //!< Average packet size in bytes
   Time m_updTime;                               //!< Time period after which RunUpdateRule () is called
-  uint32_t m_Target;                            //!< Target queue length
+  uint32_t m_target;                            //!< Target queue length
   uint32_t m_queueLimit;                        //!< Queue limit in bytes / packets
   double m_ptc;                                 //!< Bandwidth in packets per second
    
