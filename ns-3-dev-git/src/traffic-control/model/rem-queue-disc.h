@@ -76,7 +76,6 @@ public:
     uint32_t qLimDrop;          //!< Drops due to queue limit: reactive
   } Stats;
 
-
   /**
    * \brief Set the operating mode of this queue.
    *
@@ -114,7 +113,7 @@ public:
 
   /**
    * Assign a fixed random variable stream number to the random variables
-   * used by this model.  Return the number of streams (possibly zero) that
+   * used by this model. Return the number of streams (possibly zero) that
    * have been assigned.
    *
    * \param stream first stream index to use
@@ -146,8 +145,9 @@ private:
    * \returns 0 for no drop, 1 for drop
    */
   bool DropEarly (Ptr<QueueDiscItem> item, uint32_t qLen);
+
   /**
-   * Compute the average input rate, the price and the marking probability
+   * Compute the average input rate, the price and the dropping probability
    * Probability is updated periodically after m_updTime time
    */
   void RunUpdateRule ();
@@ -156,7 +156,7 @@ private:
 
   // ** Variables supplied by user
   Queue::QueueMode m_mode;                      //!< Mode (bytes or packets)
-  double m_inw;                                 //!< Queue weight given to cur q size sample
+  double m_qW;                                  //!< Queue weight given to cur queue size sample
   double m_gamma;                               //!< Weight assigned to deviation of queue length from target and input rate from capacity
   double m_phi;                                 //!< Constant for calculation of probability
   uint32_t m_meanPktSize;                       //!< Average packet size in bytes
@@ -169,7 +169,7 @@ private:
   double m_vLp;                                 //!< Variable to compute the link price
   double m_vProb;                               //!< Probability of packet dropping
   double m_vIn;                                 //!< Variable used in computing the input rate
-  double m_vAve;                                //!< Variable to store average input rate
+  double m_vAve;                                //!< Variable to store the average input rate
   uint32_t m_vCount;                            //!< Number of bytes or packets arriving at the link during one update time interval
   uint32_t m_bCount;                            //!< Queue length in bytes
   
@@ -180,4 +180,3 @@ private:
 };   // namespace ns3
 
 #endif
-
