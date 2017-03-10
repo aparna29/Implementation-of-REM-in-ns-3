@@ -158,6 +158,7 @@ private:
   Queue::QueueMode m_mode;                      //!< Mode (bytes or packets)
   double m_qW;                                  //!< Queue weight given to cur queue size sample
   double m_gamma;                               //!< Weight assigned to deviation of queue length from target and input rate from capacity
+  double m_alpha;                               //!< Weight assigned to difference between current queue length and m_target
   double m_phi;                                 //!< Constant for calculation of probability
   uint32_t m_meanPktSize;                       //!< Average packet size in bytes
   Time m_updateInterval;                        //!< Time period after which RunUpdateRule () is called
