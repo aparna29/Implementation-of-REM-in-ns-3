@@ -55,12 +55,12 @@ TypeId RemQueueDisc::GetTypeId (void)
     .AddAttribute ("InputWeight",
                    "Weight assigned to input rate",
                    DoubleValue (1.0),
-                   MakeDoubleAccessor (&PieQueueDisc::m_inW),
+                   MakeDoubleAccessor (&RemQueueDisc::m_inW),
                    MakeDoubleChecker<double> ())
     .AddAttribute ("Phi",
-                   "Value of phi used in calculation of probability",
+                   "Value of phi used to calculate probability",
                    DoubleValue (1.001),
-                   MakeDoubleAccessor (&PieQueueDisc::m_phi),
+                   MakeDoubleAccessor (&RemQueueDisc::m_phi),
                    MakeDoubleChecker<double> ())
     .AddAttribute ("MeanPktSize",
                    "Average packet size",
@@ -70,27 +70,27 @@ TypeId RemQueueDisc::GetTypeId (void)
     .AddAttribute ("UpdateInterval",
                    "Time period after which link price and probability are calculated",
                    TimeValue (Seconds (0.002)),
-                   MakeTimeAccessor (&PieQueueDisc::m_updateInterval),
+                   MakeTimeAccessor (&RemQueueDisc::m_updateInterval),
                    MakeTimeChecker ())
     .AddAttribute ("Target",
                    "Target queue length",
                    UintegerValue (20),
-                   MakeUintegerAccessor (&PieQueueDisc::m_target),
+                   MakeUintegerAccessor (&RemQueueDisc::m_target),
                    MakeUintegerChecker<uint32_t> ())
     .AddAttribute ("Gamma",
                    "Value of gamma",
                    DoubleValue (0.001),
-                   MakeDoubleAccessor (&PieQueueDisc::m_gamma),
+                   MakeDoubleAccessor (&RemQueueDisc::m_gamma),
                    MakeDoubleChecker<double> ())
     .AddAttribute ("Alpha",
                    "Value of alpha",
                    DoubleValue (0.1),
-                   MakeDoubleAccessor (&PieQueueDisc::m_alpha),
+                   MakeDoubleAccessor (&RemQueueDisc::m_alpha),
                    MakeDoubleChecker<double> ())
     .AddAttribute ("QueueLimit",
                    "Queue limit in packets",
                    UintegerValue (50),
-                   MakeUintegerAccessor (&PieQueueDisc::m_queueLimit),
+                   MakeUintegerAccessor (&RemQueueDisc::m_queueLimit),
                    MakeUintegerChecker<uint32_t> ())
     
   ;
