@@ -156,14 +156,14 @@ private:
 
   // ** Variables supplied by user
   Queue::QueueMode m_mode;                      //!< Mode (bytes or packets)
-  double m_qW;                                  //!< Queue weight given to current queue size sample
+  double m_inW;                                 //!< Weight assigned to number of bytes/packets arriving (input rate) during one update time interval.
   double m_phi;                                 //!< Constant for calculation of probability
   uint32_t m_meanPktSize;                       //!< Average packet size in bytes
   Time m_updateInterval;                        //!< Time period after which RunUpdateRule () is called
   uint32_t m_target;                            //!< Target queue length (or target buffer occupancy as mentioned in REM paper)
   double m_gamma;                               //!< Weight assigned to deviation of queue length from target and input rate from capacity
   double m_alpha;                               //!< Weight assigned to difference between current queue length and m_target
-  uint32_t m_queueLimit;                        //!< Queue limit in bytes / packets
+  uint32_t m_queueLimit;                        //!< Queue limit in packets
   double m_ptc;                                 //!< Bandwidth in packets per second
 
   // ** Variables maintained by REM
