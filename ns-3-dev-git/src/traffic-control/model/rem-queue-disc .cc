@@ -174,4 +174,28 @@ RemQueueDisc::AssignStreams (int64_t stream)
   return 1;
 }
 
+void
+RemQueueDisc::InitializeParams (void)
+{
+  // Initially queue is empty so variables are initialize to zero except for the variables used in the calculation of link price and probability
+  m_inW = 1;
+  m_phi = 1.001;
+  m_meanPktSize = 1000;
+  m_updateInterval = 0.002; 
+  m_target = 20;   
+  m_gamma = 0.001;
+  m_alpha = 0.1;
+  m_queueLimit = 50; 
+  
+  m_linkPrice = 0.0;
+  m_dropProb = 0.0;
+  m_inputRate = 0.0;
+  m_avgInputRate = 0.0;
+  m_count = 0;
+  m_countInBytes = 0;
+  
+  m_stats.qLimDrop = 0;
+  m_stats.unforcedDrop = 0;
+}
+
 } //namespace ns3
