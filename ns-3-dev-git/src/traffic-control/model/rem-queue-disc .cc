@@ -193,6 +193,14 @@ bool
 RemQueueDisc::DoEnqueue (Ptr<QueueDiscItem> item)
 {
   NS_LOG_FUNCTION (this << item);
+  if(GetMode () == Queue::QUEUE_MODE_PACKETS)
+  {
+        m_count++;
+  }
+  else
+  {
+        m_count += item->GetPacketSize ();
+  }
 
   uint32_t nQueued = GetQueueSize ();
 
@@ -238,6 +246,48 @@ bool RemQueueDisc::DropEarly (Ptr<QueueDiscItem> item, uint32_t qLen)
     }
   return earlyDrop;
 
+}
+
+Ptr<QueueDiscItem>
+RemQueueDisc::DoDequeue (void)
+{
+  NS_LOG_FUNCTION (this);
+
+  if (GetInternalQueue (0)->IsEmpty ())
+    {
+      NS_LOG_LOGIC ("Queue empty");
+   
+      return 0;
+    }
+  else
+    {
+      Ptr<QueueDiscItem> item = StaticCast<QueueDiscItem> (GetInternalQueue (0)->Dequeue ());
+
+      NS_LOG_LOGIC ("Popped " << item);
+
+      NS_LOG_LOGIC ("Number packets " << GetInternalQueue (0)->GetNPackets ());
+      NS_LOG_LOGIC ("Number bytes " << GetInternalQueue (0)->GetNBytes ());
+
+      return item;
+    }
+}
+
+Ptr<const QueueDiscItem>
+RemQueueDisc::DoPeek (void) const
+{
+  NS_LOG_FUNCTION (this);
+  if (GetInternalQueue (0)->IsEmpty ())
+    {
+      NS_LOG_LOGIC ("Queue empty");
+      return 0;
+    }
+
+  Ptr<const QueueDiscItem> item = StaticCast<const QueueDiscItem> (GetInternalQueue (0)->Peek ());
+
+  NS_LOG_LOGIC ("Number packets " << GetInternalQueue (0)->GetNPackets ());
+  NS_LOG_LOGIC ("Number bytes " << GetInternalQueue (0)->GetNBytes ());
+
+  return item;
 }
 
 } //namespace ns3
