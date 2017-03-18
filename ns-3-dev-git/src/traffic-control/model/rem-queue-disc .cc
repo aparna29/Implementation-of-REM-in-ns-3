@@ -189,4 +189,55 @@ RemQueueDisc::InitializeParams (void)
   m_stats.unforcedDrop = 0;
 }
 
+bool
+RemQueueDisc::DoEnqueue (Ptr<QueueDiscItem> item)
+{
+  NS_LOG_FUNCTION (this << item);
+
+  uint32_t nQueued = GetQueueSize ();
+
+  if ((GetMode () == Queue::QUEUE_MODE_PACKETS && nQueued + 1 > m_queueLimit)
+      || (GetMode () == Queue::QUEUE_MODE_BYTES && nQueued + item->GetPacketSize () > m_queueLimit*m_meanPktSize))
+    {
+      // Drops due to queue limit: reactive
+      Drop (item);
+      m_stats.qLimDrop++;
+      return false;
+    }
+  else if (DropEarly (item, nQueued))
+    {
+      // Early probability drop: proactive
+      Drop (item);
+      m_stats.unforcedDrop++;
+      return false;
+    }
+
+  // No drop
+  bool retval = GetInternalQueue (0)->Enqueue (item);
+
+  // If Queue::Enqueue fails, QueueDisc::Drop is called by the internal queue
+  // because QueueDisc::AddInternalQueue sets the drop callback
+
+  NS_LOG_LOGIC ("\t bytesInQueue  " << GetInternalQueue (0)->GetNBytes ());
+  NS_LOG_LOGIC ("\t packetsInQueue  " << GetInternalQueue (0)->GetNPackets ());
+
+  return retval;
+}
+
+bool RemQueueDisc::DropEarly (Ptr<QueueDiscItem> item, uint32_t qLen)
+{
+  NS_LOG_FUNCTION (this << item << qLen);
+  
+  double p = m_dropProb;
+  bool earlyDrop = true;
+  double u = m_uv->GetValue ();
+  
+   if (u > p)
+    {
+      earlyDrop = false;
+    }
+  return earlyDrop;
+
+}
+
 } //namespace ns3
