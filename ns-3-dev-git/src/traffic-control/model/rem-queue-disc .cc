@@ -92,7 +92,12 @@ TypeId RemQueueDisc::GetTypeId (void)
                    UintegerValue (50),
                    MakeUintegerAccessor (&RemQueueDisc::m_queueLimit),
                    MakeUintegerChecker<uint32_t> ())
-    
+    .AddAttribute ("LinkBandwidth",
+                   "The REM link bandwidth",
+                   DataRateValue (DataRate ("1.5Mbps")),
+                   MakeDataRateAccessor (&RedQueueDisc::m_linkBandwidth),
+                   MakeDataRateChecker ())
+
   ;
 
   return tid;
@@ -184,9 +189,11 @@ RemQueueDisc::InitializeParams (void)
   m_avgInputRate = 0.0;
   m_count = 0;
   m_countInBytes = 0;
-  
+
   m_stats.qLimDrop = 0;
   m_stats.unforcedDrop = 0;
+
+  m_ptc = m_linkBandwidth.GetBitRate () / (8.0 * m_meanPktSize);
 }
 
 bool
@@ -194,13 +201,13 @@ RemQueueDisc::DoEnqueue (Ptr<QueueDiscItem> item)
 {
   NS_LOG_FUNCTION (this << item);
   if(GetMode () == Queue::QUEUE_MODE_PACKETS)
-  {
-        m_count++;
-  }
+    {
+      m_count++;
+    }
   else
-  {
-        m_count += item->GetPacketSize ();
-  }
+    {
+      m_count += item->GetPacketSize ();
+    }
 
   uint32_t nQueued = GetQueueSize ();
 
@@ -235,11 +242,11 @@ RemQueueDisc::DoEnqueue (Ptr<QueueDiscItem> item)
 bool RemQueueDisc::DropEarly (Ptr<QueueDiscItem> item, uint32_t qLen)
 {
   NS_LOG_FUNCTION (this << item << qLen);
-  
+
   double p = m_dropProb;
   bool earlyDrop = true;
   double u = m_uv->GetValue ();
-  
+
    if (u > p)
     {
       earlyDrop = false;
@@ -256,7 +263,7 @@ RemQueueDisc::DoDequeue (void)
   if (GetInternalQueue (0)->IsEmpty ())
     {
       NS_LOG_LOGIC ("Queue empty");
-   
+
       return 0;
     }
   else
@@ -288,6 +295,54 @@ RemQueueDisc::DoPeek (void) const
   NS_LOG_LOGIC ("Number bytes " << GetInternalQueue (0)->GetNBytes ());
 
   return item;
+}
+
+void
+RemQueueDisc::RunUpdateRule (void)
+{
+  double lp, in, in_avg, nQueued, c, exp, prob;
+
+  // lp is link price (congestion measure)
+  lp = m_linkPrice;
+
+  // in is the number of bytes (if Queue mode is in bytes) or packets (otherwise)
+  // arriving at the link (input rate) during one update time interval
+  in = m_count;
+
+  // in_avg is the low pass filtered input rate
+  in_avg = m_avgInputRate;
+
+  in_avg = in_avg*(1.0 - m_inW);
+
+  if(GetMode () == Queue::QUEUE_MODE_BYTES)
+    {
+      in_avg = in_avg + m_inW*in/m_meanPktSize;
+      nQueued = GetQueueSize ()/m_meanPktSize;
+    }
+  else
+    {
+      in_avg = in_avg + m_inW*in;
+      nQueued = GetQueueSize ();
+    }
+
+  // c measures the maximum number of packets that
+	// could be sent during one update interval
+  c = m_updateInterval*m_ptc;
+
+  lp = lp + m_gamma*(in_avg + m_alpha*(nQueued - m_target) - c);
+
+  if(lp<0.0)
+    {
+      lp = 0.0;
+    }
+       
+  exp = pow(m_phi,-lp);
+  prob = 1.0 - exp;
+
+  m_count = 0.0;
+  m_avgInputRate = in_avg;
+  m_linkPrice = lp;
+  m_dropProb = prob;
 }
 
 } //namespace ns3
