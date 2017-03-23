@@ -345,4 +345,57 @@ RemQueueDisc::RunUpdateRule (void)
   m_dropProb = prob;
 }
 
+bool
+RemQueueDisc::CheckConfig (void)
+{
+  NS_LOG_FUNCTION (this);
+  if (GetNQueueDiscClasses () > 0)
+    {
+      NS_LOG_ERROR ("RemQueueDisc cannot have classes");
+      return false;
+    }
+
+  if (GetNPacketFilters () > 0)
+    {
+      NS_LOG_ERROR ("RemQueueDisc cannot have packet filters");
+      return false;
+    }
+
+  if (GetNInternalQueues () == 0)
+    {
+      // create a DropTail queue
+      Ptr<Queue> queue = CreateObjectWithAttributes<DropTailQueue> ("Mode", EnumValue (m_mode));
+      if (m_mode == Queue::QUEUE_MODE_PACKETS)
+        {
+          queue->SetMaxPackets (m_queueLimit);
+        }
+      else
+        {
+          queue->SetMaxBytes (m_queueLimit);
+        }
+      AddInternalQueue (queue);
+    }
+
+  if (GetNInternalQueues () != 1)
+    {
+      NS_LOG_ERROR ("RemQueueDisc needs 1 internal queue");
+      return false;
+    }
+
+  if (GetInternalQueue (0)->GetMode () != m_mode)
+    {
+      NS_LOG_ERROR ("The mode of the provided queue does not match the mode set on the RemQueueDisc");
+      return false;
+    }
+
+  if ((m_mode ==  Queue::QUEUE_MODE_PACKETS && GetInternalQueue (0)->GetMaxPackets () < m_queueLimit)
+      || (m_mode ==  Queue::QUEUE_MODE_BYTES && GetInternalQueue (0)->GetMaxBytes () < m_queueLimit))
+    {
+      NS_LOG_ERROR ("The size of the internal queue is less than the queue disc limit");
+      return false;
+    }
+
+  return true;
+}
+
 } //namespace ns3
