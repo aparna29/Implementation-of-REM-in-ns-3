@@ -312,21 +312,21 @@ RemQueueDisc::RunUpdateRule (void)
   // in_avg is the low pass filtered input rate
   in_avg = m_avgInputRate;
 
-  in_avg = in_avg*(1.0 - m_inW);
+  in_avg = in_avg * (1.0 - m_inW);
 
-  if(GetMode () == Queue::QUEUE_MODE_BYTES)
+  if (GetMode () == Queue::QUEUE_MODE_BYTES)
     {
-      in_avg = in_avg + m_inW*in/m_meanPktSize;
-      nQueued = GetQueueSize ()/m_meanPktSize;
+      in_avg = in_avg + m_inW*in / m_meanPktSize;
+      nQueued = GetQueueSize () / m_meanPktSize;
     }
   else
     {
-      in_avg = in_avg + m_inW*in;
+      in_avg = in_avg + m_inW * in;
       nQueued = GetQueueSize ();
     }
 
   // c measures the maximum number of packets that
-	// could be sent during one update interval
+  // could be sent during one update interval
   c = m_updateInterval.GetSeconds() * m_ptc;
 
   lp = lp + m_gamma * (in_avg + m_alpha * (nQueued - m_target) - c);
