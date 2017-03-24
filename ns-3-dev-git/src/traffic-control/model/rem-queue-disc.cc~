@@ -316,7 +316,7 @@ RemQueueDisc::RunUpdateRule (void)
 
   if (GetMode () == Queue::QUEUE_MODE_BYTES)
     {
-      in_avg = in_avg + m_inW * in / m_meanPktSize;
+      in_avg = in_avg + m_inW*in / m_meanPktSize;
       nQueued = GetQueueSize () / m_meanPktSize;
     }
   else
