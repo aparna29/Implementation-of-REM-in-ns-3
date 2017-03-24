@@ -327,7 +327,7 @@ RemQueueDisc::RunUpdateRule (void)
 
   // c measures the maximum number of packets that
   // could be sent during one update interval
-  c = m_updateInterval.GetSeconds() * m_ptc;
+  c = m_updateInterval.GetSeconds () * m_ptc;
 
   lp = lp + m_gamma * (in_avg + m_alpha * (nQueued - m_target) - c);
 
@@ -336,7 +336,7 @@ RemQueueDisc::RunUpdateRule (void)
       lp = 0.0;
     }
        
-  exp = pow(m_phi,-lp);
+  exp = pow (m_phi, -lp);
   prob = 1.0 - exp;
 
   m_count = 0.0;
