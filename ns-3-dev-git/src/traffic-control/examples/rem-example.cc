@@ -72,7 +72,7 @@ std::stringstream filePlotQueueDiscAvg;
 void
 CheckQueueDiscSize (Ptr<QueueDisc> queue)
 {
-  uint32_t qSize = StaticCast<PieQueueDisc> (queue)->GetQueueSize ();
+  uint32_t qSize = StaticCast<RemQueueDisc> (queue)->GetQueueSize ();
 
   avgQueueDiscSize += qSize;
   checkTimes++;
