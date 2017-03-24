@@ -95,7 +95,7 @@ TypeId RemQueueDisc::GetTypeId (void)
     .AddAttribute ("LinkBandwidth",
                    "The REM link bandwidth",
                    DataRateValue (DataRate ("1.5Mbps")),
-                   MakeDataRateAccessor (&RedQueueDisc::m_linkBandwidth),
+                   MakeDataRateAccessor (&RemQueueDisc::m_linkBandwidth),
                    MakeDataRateChecker ())
 
   ;
@@ -212,7 +212,7 @@ RemQueueDisc::DoEnqueue (Ptr<QueueDiscItem> item)
   uint32_t nQueued = GetQueueSize ();
 
   if ((GetMode () == Queue::QUEUE_MODE_PACKETS && nQueued + 1 > m_queueLimit)
-      || (GetMode () == Queue::QUEUE_MODE_BYTES && nQueued + item->GetPacketSize () > m_queueLimit*m_meanPktSize))
+      || (GetMode () == Queue::QUEUE_MODE_BYTES && nQueued + item->GetPacketSize () > m_queueLimit))
     {
       // Drops due to queue limit: reactive
       Drop (item);
@@ -327,11 +327,11 @@ RemQueueDisc::RunUpdateRule (void)
 
   // c measures the maximum number of packets that
 	// could be sent during one update interval
-  c = m_updateInterval*m_ptc;
+  c = m_updateInterval.GetSeconds() * m_ptc;
 
-  lp = lp + m_gamma*(in_avg + m_alpha*(nQueued - m_target) - c);
+  lp = lp + m_gamma * (in_avg + m_alpha * (nQueued - m_target) - c);
 
-  if(lp<0.0)
+  if (lp < 0.0)
     {
       lp = 0.0;
     }
