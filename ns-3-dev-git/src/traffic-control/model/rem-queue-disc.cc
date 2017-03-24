@@ -300,6 +300,7 @@ RemQueueDisc::DoPeek (void) const
 void
 RemQueueDisc::RunUpdateRule (void)
 {
+  NS_LOG_FUNCTION (this);
   double lp, in, in_avg, nQueued, c, exp, prob;
 
   // lp is link price (congestion measure)
@@ -343,6 +344,8 @@ RemQueueDisc::RunUpdateRule (void)
   m_avgInputRate = in_avg;
   m_linkPrice = lp;
   m_dropProb = prob;
+  
+  m_rtrsEvent = Simulator::Schedule (m_updateInterval, &RemQueueDisc::RunUpdateRule, this);
 }
 
 bool
