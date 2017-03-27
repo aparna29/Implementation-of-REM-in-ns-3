@@ -219,8 +219,8 @@ RemQueueDiscTestCase::RunRemTest (StringValue mode)
   NS_TEST_EXPECT_MSG_EQ (queue->SetAttributeFailSafe ("Target", UintegerValue (50)), true,
                          "Verify that we can actually set the attribute Target");
   queue->Initialize ();
-  EnqueueWithDelay (queue, pktSize, 300);
-  //DequeueWithDelay(queue,0.012,300);
+  EnqueueWithDelay (queue, pktSize, 400);
+  DequeueWithDelay(queue,0.012,400);
 
   Simulator::Stop (Seconds (8.0));
   Simulator::Run ();
@@ -233,7 +233,7 @@ RemQueueDiscTestCase::RunRemTest (StringValue mode)
 
 
   // test 3: same as test 2, but with higher QueueDelayReference
-  /*queue = CreateObject<RemQueueDisc> ();
+  queue = CreateObject<RemQueueDisc> ();
   NS_TEST_EXPECT_MSG_EQ (queue->SetAttributeFailSafe ("Mode", mode), true,
                          "Verify that we can actually set the attribute Mode");
   NS_TEST_EXPECT_MSG_EQ (queue->SetAttributeFailSafe ("QueueLimit", UintegerValue (qSize)), true,
@@ -247,12 +247,15 @@ RemQueueDiscTestCase::RunRemTest (StringValue mode)
   NS_TEST_EXPECT_MSG_EQ (queue->SetAttributeFailSafe ("Target", UintegerValue (150*modeSize)), true,
                          "Verify that we can actually set the attribute Target");
   queue->Initialize ();
-  Enqueue (queue, pktSize, 300);
-  Dequeue(queue,300);
+  EnqueueWithDelay (queue, pktSize, 400);
+  DequeueWithDelay(queue,0.012,400);
+
+  Simulator::Stop (Seconds (8.0));
+  Simulator::Run ();
   st = StaticCast<RemQueueDisc> (queue)->GetStats ();
   uint32_t test3 = st.unforcedDrop;
   NS_TEST_EXPECT_MSG_LT (test3, test2, "Test 3 should have less unforced drops than test 2");
-  NS_TEST_EXPECT_MSG_EQ (st.qLimDrop, 0, "There should be zero forced drops");*/
+  NS_TEST_EXPECT_MSG_EQ (st.qLimDrop, 0, "There should be zero forced drops");
 
 
   }
