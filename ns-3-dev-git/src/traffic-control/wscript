@@ -27,7 +27,7 @@ def build(bld):
       'test/red-queue-disc-test-suite.cc',
       'test/codel-queue-disc-test-suite.cc',
       'test/adaptive-red-queue-disc-test-suite.cc',
-      'test/pie-queue-disc-test-suite.cc'
+      'test/pie-queue-disc-test-suite.cc',
       'test/rem-queue-disc-test-suite.cc'
         ]
 
