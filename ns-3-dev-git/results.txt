@@ -1,0 +1,9 @@
+FAIL: Test Suite "rem-queue-disc" (0.010)
+FAIL: Test Suite "Sanity check on the rem queue disc implementation" (0.010)
+    Details:
+      Message:   There should be some unforced drops
+      Condition: test2 (actual) != 0 (limit)
+      Actual:    0
+      Limit:     0
+      File:      ../src/traffic-control/test/rem-queue-disc-test-suite.cc
+      Line:      231

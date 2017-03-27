@@ -220,7 +220,7 @@ RemQueueDiscTestCase::RunRemTest (StringValue mode)
                          "Verify that we can actually set the attribute Target");
   queue->Initialize ();
   EnqueueWithDelay (queue, pktSize, 300);
-  //DequeueWithDelay(queue,0.012,300);
+  DequeueWithDelay(queue,0.012,300);
 
   Simulator::Stop (Seconds (8.0));
   Simulator::Run ();
