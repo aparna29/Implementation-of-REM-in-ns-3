@@ -1,6 +1,6 @@
 /* -*- Mode:C++; c-file-style:"gnu"; indent-tabs-mode:nil; -*- */
 /*
- * Copyright (c) 2016 NITK Surathkal
+ * Copyright (c) 2017 NITK Surathkal
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 2 as
@@ -106,15 +106,24 @@ private:
    * \param nPkt the number of packets
    */
    void EnqueueWithDelay (Ptr<RemQueueDisc> queue, uint32_t size, uint32_t nPkt);
+   /**
+   * Dequeue function
+   * \param queue the queue disc
+   * \param nPkt the number of packets
+   */
    void Dequeue (Ptr<RemQueueDisc> queue, uint32_t nPkt);
-   void DequeueWithDelay (Ptr<RemQueueDisc> queue, double delay, uint32_t nPkt);
-  /**
+   /**
    * Dequeue with delay function
    * \param queue the queue disc
    * \param delay the delay
    * \param nPkt the number of packets
    */
-  void RunRemTest (StringValue mode);
+   void DequeueWithDelay (Ptr<RemQueueDisc> queue, double delay, uint32_t nPkt);
+   /**
+   * Run test function
+   * \param mode the test mode
+   */
+   void RunRemTest (StringValue mode);
 };
 
 RemQueueDiscTestCase::RemQueueDiscTestCase ()
@@ -203,7 +212,6 @@ RemQueueDiscTestCase::RunRemTest (StringValue mode)
 
 
   // test 2: more data with defaults, unforced drops but no forced drops
-  //qSize = 300*modeSize;
   queue = CreateObject<RemQueueDisc> ();
   pktSize = 1000; 
   NS_TEST_EXPECT_MSG_EQ (queue->SetAttributeFailSafe ("Mode", mode), true,
@@ -225,7 +233,6 @@ RemQueueDiscTestCase::RunRemTest (StringValue mode)
   Simulator::Stop (Seconds (8.0));
   Simulator::Run ();
   
-  //Enqueue(queue, pktSize,300);
   RemQueueDisc::Stats st = StaticCast<RemQueueDisc> (queue)->GetStats ();
   uint32_t test2 = st.unforcedDrop;
   NS_TEST_EXPECT_MSG_NE (test2, 0, "There should be some unforced drops");
@@ -300,7 +307,7 @@ void
 RemQueueDiscTestCase::DoRun (void)
 {
   RunRemTest (StringValue ("QUEUE_MODE_PACKETS"));
-  //RunRemTest (StringValue ("QUEUE_MODE_BYTES"));
+  RunRemTest (StringValue ("QUEUE_MODE_BYTES"));
   Simulator::Destroy ();
 }
 

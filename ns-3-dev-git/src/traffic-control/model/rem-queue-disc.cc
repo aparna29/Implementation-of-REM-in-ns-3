@@ -203,13 +203,10 @@ RemQueueDisc::DoEnqueue (Ptr<QueueDiscItem> item)
   if(GetMode () == Queue::QUEUE_MODE_PACKETS)
     {
       m_count++;
-      NS_LOG_LOGIC ("\t m_count = " << m_count); 
-      
     }
   else
     {
       m_count += item->GetPacketSize ();
-      NS_LOG_LOGIC ("\t m_count = " << m_count); 
     }
 
   uint32_t nQueued = GetQueueSize ();
@@ -313,7 +310,6 @@ RemQueueDisc::RunUpdateRule (void)
   // in is the number of bytes (if Queue mode is in bytes) or packets (otherwise)
   // arriving at the link (input rate) during one update time interval
   in = m_count;
-    //NS_LOG_LOGIC ("\t m_count = " << in);  
   // in_avg is the low pass filtered input rate
   in_avg = m_avgInputRate;
 
@@ -333,19 +329,17 @@ RemQueueDisc::RunUpdateRule (void)
   // c measures the maximum number of packets that
   // could be sent during one update interval
   c = m_updateInterval.GetSeconds () * m_ptc;
-    //NS_LOG_LOGIC ("\t Queue Length  " << nQueued);
-    //NS_LOG_LOGIC ("\t Avg Input Rate  " << in_avg);  
+    
   lp = lp + m_gamma * (in_avg + m_alpha * (nQueued - m_target) - c);
-  //NS_LOG_LOGIC ("\t Link price before  " << lp);     
+
   if (lp < 0.0)
     {
       lp = 0.0;
     }
-  //NS_LOG_LOGIC ("\t Link price after  " << lp);     
+  
   exp = pow (m_phi, -lp);
   prob = 1.0 - exp;
   
-  //prob = 1.0 + exp -exp;
   m_count = 0.0;
   m_avgInputRate = in_avg;
   m_linkPrice = lp;

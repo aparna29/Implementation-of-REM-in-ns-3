@@ -1,2 +1,2 @@
-PASS: Test Suite "rem-queue-disc" (0.030)
-PASS: Test Suite "Sanity check on the rem queue disc implementation" (0.030)
+PASS: Test Suite "rem-queue-disc" (0.060)
+PASS: Test Suite "Sanity check on the rem queue disc implementation" (0.060)
