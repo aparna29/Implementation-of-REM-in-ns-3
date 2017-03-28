@@ -7,7 +7,7 @@ REM queue disc
 This chapter describes the REM ([Athuraliya]_) queue disc implementation 
 in |ns3|. 
 
-Random Exponential Marking (REM) is a queuing discipline that aims to achieve both high utilization and negligible loss and delay in
+Random Exponential Marking (REM) is a queuing discipline that aims to achieve high utilization, negligible loss and delay in
 a simple and scalable manner. The model in ns-3 is a port of Sanjeewa Athuraliya's ns-2 REM model.
 
 
@@ -69,7 +69,7 @@ Validation
 The REM model is tested using :cpp:class:`RemQueueDiscTestSuite` class defined in `src/traffic-control/test/rem-queue-test-suite.cc`. The suite includes 3 test cases:
 
 * Test 1: simple enqueue/dequeue with defaults, no drops
-* Test 2: more data with defaults, some unforced drops and zero forced drops
+* Test 2: more data with defaults, unforced drops and no forced drops
 * Test 3: same as test 2, but with higher Target
 
 The test suite can be run using the following commands: 
