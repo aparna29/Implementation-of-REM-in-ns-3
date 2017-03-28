@@ -37,7 +37,7 @@ References
 Attributes
 ==========
 
-The key attributes that the RemQueue class holds include the following: 
+The key attributes that the RemQueueDisc class holds include the following: 
 
 * ``Mode:`` REM operating mode (BYTES or PACKETS). The default mode is PACKETS. 
 * ``QueueLimit:`` The maximum number of bytes or packets the queue can hold. The default value is 50 bytes / packets.
@@ -69,7 +69,7 @@ Validation
 The REM model is tested using :cpp:class:`RemQueueDiscTestSuite` class defined in `src/traffic-control/test/rem-queue-test-suite.cc`. The suite includes 3 test cases:
 
 * Test 1: simple enqueue/dequeue with defaults, no drops
-* Test 2: more data with defaults, unforced drops and no forced drops
+* Test 2: more data with defaults, unforced drops but no forced drops
 * Test 3: same as test 2, but with higher Target
 
 The test suite can be run using the following commands: 

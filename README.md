@@ -12,7 +12,7 @@ Random Exponential Marking (REM) [1] is an active queue management algorithm lik
 
 An example program for REM has been provided in
 
-`src/traffic-control/examples/rem-example.cc`
+`src/examples/traffic-control/rem-example.cc`
 
 and should be executed as
 

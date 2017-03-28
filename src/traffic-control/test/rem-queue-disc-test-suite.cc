@@ -239,7 +239,7 @@ RemQueueDiscTestCase::RunRemTest (StringValue mode)
   NS_TEST_EXPECT_MSG_EQ (st.qLimDrop, 0, "There should be no forced drops");
 
 
-  // test 3: same as test 2, but with higher QueueDelayReference
+  // test 3: same as test 2, but with higher Target
   queue = CreateObject<RemQueueDisc> ();
   NS_TEST_EXPECT_MSG_EQ (queue->SetAttributeFailSafe ("Mode", mode), true,
                          "Verify that we can actually set the attribute Mode");
