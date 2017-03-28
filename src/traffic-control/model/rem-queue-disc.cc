@@ -200,7 +200,7 @@ bool
 RemQueueDisc::DoEnqueue (Ptr<QueueDiscItem> item)
 {
   NS_LOG_FUNCTION (this << item);
-  if(GetMode () == Queue::QUEUE_MODE_PACKETS)
+  if (GetMode () == Queue::QUEUE_MODE_PACKETS)
     {
       m_count++;
     }
@@ -247,8 +247,8 @@ bool RemQueueDisc::DropEarly (Ptr<QueueDiscItem> item, uint32_t qLen)
   bool earlyDrop = true;
   double u = m_uv->GetValue ();
   //NS_LOG_LOGIC ("\t Drop Probability  " << m_dropProb << " u :: " << u);
-  
-   if (u > p)
+
+  if (u > p)
     {
       earlyDrop = false;
     }
@@ -329,22 +329,22 @@ RemQueueDisc::RunUpdateRule (void)
   // c measures the maximum number of packets that
   // could be sent during one update interval
   c = m_updateInterval.GetSeconds () * m_ptc;
-    
+
   lp = lp + m_gamma * (in_avg + m_alpha * (nQueued - m_target) - c);
 
   if (lp < 0.0)
     {
       lp = 0.0;
     }
-  
+
   exp = pow (m_phi, -lp);
   prob = 1.0 - exp;
-  
+
   m_count = 0.0;
   m_avgInputRate = in_avg;
   m_linkPrice = lp;
   m_dropProb = prob;
-  
+
   m_rtrsEvent = Simulator::Schedule (m_updateInterval, &RemQueueDisc::RunUpdateRule, this);
 }
 

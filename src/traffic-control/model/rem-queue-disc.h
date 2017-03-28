@@ -166,7 +166,7 @@ private:
   uint32_t m_queueLimit;                        //!< Queue limit in packets
   double m_ptc;                                 //!< Bandwidth in packets per second
   DataRate m_linkBandwidth;                     //!< Link bandwidth
-  
+
   // ** Variables maintained by REM
   double m_linkPrice;                           //!< Variable to compute the link price
   double m_dropProb;                            //!< Probability of packet dropping

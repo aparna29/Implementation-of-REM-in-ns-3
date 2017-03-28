@@ -105,25 +105,25 @@ private:
    * \param size the size
    * \param nPkt the number of packets
    */
-   void EnqueueWithDelay (Ptr<RemQueueDisc> queue, uint32_t size, uint32_t nPkt);
-   /**
-   * Dequeue function
-   * \param queue the queue disc
-   * \param nPkt the number of packets
-   */
-   void Dequeue (Ptr<RemQueueDisc> queue, uint32_t nPkt);
-   /**
-   * Dequeue with delay function
-   * \param queue the queue disc
-   * \param delay the delay
-   * \param nPkt the number of packets
-   */
-   void DequeueWithDelay (Ptr<RemQueueDisc> queue, double delay, uint32_t nPkt);
-   /**
-   * Run test function
-   * \param mode the test mode
-   */
-   void RunRemTest (StringValue mode);
+  void EnqueueWithDelay (Ptr<RemQueueDisc> queue, uint32_t size, uint32_t nPkt);
+  /**
+  * Dequeue function
+  * \param queue the queue disc
+  * \param nPkt the number of packets
+  */
+  void Dequeue (Ptr<RemQueueDisc> queue, uint32_t nPkt);
+  /**
+  * Dequeue with delay function
+  * \param queue the queue disc
+  * \param delay the delay
+  * \param nPkt the number of packets
+  */
+  void DequeueWithDelay (Ptr<RemQueueDisc> queue, double delay, uint32_t nPkt);
+  /**
+  * Run test function
+  * \param mode the test mode
+  */
+  void RunRemTest (StringValue mode);
 };
 
 RemQueueDiscTestCase::RemQueueDiscTestCase ()
@@ -213,7 +213,7 @@ RemQueueDiscTestCase::RunRemTest (StringValue mode)
 
   // test 2: more data with defaults, unforced drops but no forced drops
   queue = CreateObject<RemQueueDisc> ();
-  pktSize = 1000; 
+  pktSize = 1000;
   NS_TEST_EXPECT_MSG_EQ (queue->SetAttributeFailSafe ("Mode", mode), true,
                          "Verify that we can actually set the attribute Mode");
   NS_TEST_EXPECT_MSG_EQ (queue->SetAttributeFailSafe ("QueueLimit", UintegerValue (qSize)), true,
@@ -228,11 +228,11 @@ RemQueueDiscTestCase::RunRemTest (StringValue mode)
                          "Verify that we can actually set the attribute Target");
   queue->Initialize ();
   EnqueueWithDelay (queue, pktSize, 400);
-  DequeueWithDelay(queue,0.012,400);
+  DequeueWithDelay (queue,0.012,400);
 
   Simulator::Stop (Seconds (8.0));
   Simulator::Run ();
-  
+
   RemQueueDisc::Stats st = StaticCast<RemQueueDisc> (queue)->GetStats ();
   uint32_t test2 = st.unforcedDrop;
   NS_TEST_EXPECT_MSG_NE (test2, 0, "There should be some unforced drops");
@@ -251,11 +251,11 @@ RemQueueDiscTestCase::RunRemTest (StringValue mode)
                          "Verify that we can actually set the attribute Gamma");
   NS_TEST_EXPECT_MSG_EQ (queue->SetAttributeFailSafe ("UpdateInterval", TimeValue (Seconds (0.002))), true,
                          "Verify that we can actually set the attribute UpdateInterval");
-  NS_TEST_EXPECT_MSG_EQ (queue->SetAttributeFailSafe ("Target", UintegerValue (150*modeSize)), true,
+  NS_TEST_EXPECT_MSG_EQ (queue->SetAttributeFailSafe ("Target", UintegerValue (150 * modeSize)), true,
                          "Verify that we can actually set the attribute Target");
   queue->Initialize ();
   EnqueueWithDelay (queue, pktSize, 400);
-  DequeueWithDelay(queue,0.012,400);
+  DequeueWithDelay (queue,0.012,400);
 
   Simulator::Stop (Seconds (8.0));
   Simulator::Run ();
@@ -263,9 +263,7 @@ RemQueueDiscTestCase::RunRemTest (StringValue mode)
   uint32_t test3 = st.unforcedDrop;
   NS_TEST_EXPECT_MSG_LT (test3, test2, "Test 3 should have less unforced drops than test 2");
   NS_TEST_EXPECT_MSG_EQ (st.qLimDrop, 0, "There should be zero forced drops");
-
-
-  }
+}
 
 void
 RemQueueDiscTestCase::Enqueue (Ptr<RemQueueDisc> queue, uint32_t size, uint32_t nPkt)
@@ -276,6 +274,7 @@ RemQueueDiscTestCase::Enqueue (Ptr<RemQueueDisc> queue, uint32_t size, uint32_t 
       queue->Enqueue (Create<RemQueueDiscTestItem> (Create<Packet> (size), dest, 0));
     }
 }
+
 void
 RemQueueDiscTestCase::EnqueueWithDelay (Ptr<RemQueueDisc> queue, uint32_t size, uint32_t nPkt)
 {
@@ -286,6 +285,7 @@ RemQueueDiscTestCase::EnqueueWithDelay (Ptr<RemQueueDisc> queue, uint32_t size, 
       Simulator::Schedule (Time (Seconds ((i + 1) * delay)), &RemQueueDiscTestCase::Enqueue, this, queue, size, 1);
     }
 }
+
 void
 RemQueueDiscTestCase::Dequeue (Ptr<RemQueueDisc> queue, uint32_t nPkt)
 {
@@ -294,6 +294,7 @@ RemQueueDiscTestCase::Dequeue (Ptr<RemQueueDisc> queue, uint32_t nPkt)
       Ptr<QueueDiscItem> item = queue->Dequeue ();
     }
 }
+
 void
 RemQueueDiscTestCase::DequeueWithDelay (Ptr<RemQueueDisc> queue, double delay, uint32_t nPkt)
 {
