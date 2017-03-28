@@ -32,7 +32,7 @@ based on ns-2 code implemented by Sanjeewa Athuraliya.
 References
 ==========
 
-.. [Athuraliya] Athuraliya, S., Low, S. H., Li, V. H., & Yin, Q. (2001). REM: Active queue management. IEEE network, 15(3), 48-53. Available online at `<https://www.ietf.org/mail-archive/web/iccrg/current/pdfB57AZSheOH.pdf>`_.
+.. [Athuraliya] Athuraliya, S., Low, S. H., Li, V. H., & Yin, Q. (2001). REM: Active queue management. IEEE network, 15(3), 48-53. Available online at `<http://ieeexplore.ieee.org/stamp/stamp.jsp?arnumber=923940&tag=1>`_.
 
 Attributes
 ==========
