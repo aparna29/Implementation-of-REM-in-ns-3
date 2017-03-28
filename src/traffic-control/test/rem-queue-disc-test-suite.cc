@@ -235,8 +235,8 @@ RemQueueDiscTestCase::RunRemTest (StringValue mode)
 
   RemQueueDisc::Stats st = StaticCast<RemQueueDisc> (queue)->GetStats ();
   uint32_t test2 = st.unforcedDrop;
-  NS_TEST_EXPECT_MSG_NE (test2, 0, "There should be some unforced drops");
-  NS_TEST_EXPECT_MSG_EQ (st.qLimDrop, 0, "There should be zero forced drops");
+  NS_TEST_EXPECT_MSG_NE (test2, 0, "There should be unforced drops");
+  NS_TEST_EXPECT_MSG_EQ (st.qLimDrop, 0, "There should be no forced drops");
 
 
   // test 3: same as test 2, but with higher QueueDelayReference
