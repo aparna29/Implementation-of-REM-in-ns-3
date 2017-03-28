@@ -74,6 +74,7 @@ public:
   {
     uint32_t unforcedDrop;      //!< Early probability drops: proactive
     uint32_t qLimDrop;          //!< Drops due to queue limit: reactive
+    uint32_t unforcedMark;      //!< Keeps count of the marked packet
   } Stats;
 
   /**
@@ -141,10 +142,9 @@ private:
   /**
    * \brief Check if a packet needs to be dropped due to probability drop
    * \param item queue item
-   * \param qLen queue length
    * \returns 0 for no drop, 1 for drop
    */
-  bool DropEarly (Ptr<QueueDiscItem> item, uint32_t qLen);
+  bool DropEarly (Ptr<QueueDiscItem> item);
 
   /**
    * Compute the average input rate, the price and the dropping probability
@@ -166,6 +166,7 @@ private:
   uint32_t m_queueLimit;                        //!< Queue limit in packets
   double m_ptc;                                 //!< Bandwidth in packets per second
   DataRate m_linkBandwidth;                     //!< Link bandwidth
+  bool m_useEcn;                                //!< True if ECN is used (packets are marked instead of being dropped)
 
   // ** Variables maintained by REM
   double m_linkPrice;                           //!< Variable to compute the link price

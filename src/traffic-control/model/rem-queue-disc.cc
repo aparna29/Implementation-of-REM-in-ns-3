@@ -97,6 +97,11 @@ TypeId RemQueueDisc::GetTypeId (void)
                    DataRateValue (DataRate ("1.5Mbps")),
                    MakeDataRateAccessor (&RemQueueDisc::m_linkBandwidth),
                    MakeDataRateChecker ())
+    .AddAttribute ("UseEcn",
+                   "True to use ECN (packets are marked instead of being dropped)",
+                   BooleanValue (false),
+                   MakeBooleanAccessor (&RemQueueDisc::m_useEcn),
+                   MakeBooleanChecker ())
 
   ;
 
@@ -192,6 +197,7 @@ RemQueueDisc::InitializeParams (void)
 
   m_stats.qLimDrop = 0;
   m_stats.unforcedDrop = 0;
+  m_stats.unforcedMark = 0;
 
   m_ptc = m_linkBandwidth.GetBitRate () / (8.0 * m_meanPktSize);
 }
@@ -219,7 +225,7 @@ RemQueueDisc::DoEnqueue (Ptr<QueueDiscItem> item)
       m_stats.qLimDrop++;
       return false;
     }
-  else if (DropEarly (item, nQueued))
+  else if (!m_useEcn && DropEarly (item))
     {
       // Early probability drop: proactive
       Drop (item);
@@ -239,9 +245,9 @@ RemQueueDisc::DoEnqueue (Ptr<QueueDiscItem> item)
   return retval;
 }
 
-bool RemQueueDisc::DropEarly (Ptr<QueueDiscItem> item, uint32_t qLen)
+bool RemQueueDisc::DropEarly (Ptr<QueueDiscItem> item)
 {
-  NS_LOG_FUNCTION (this << item << qLen);
+  NS_LOG_FUNCTION (this << item);
 
   double p = m_dropProb;
   bool earlyDrop = true;
@@ -270,6 +276,14 @@ RemQueueDisc::DoDequeue (void)
   else
     {
       Ptr<QueueDiscItem> item = StaticCast<QueueDiscItem> (GetInternalQueue (0)->Dequeue ());
+
+      if (m_useEcn)
+        {
+          if (DropEarly (item) && item->Mark ())
+            {
+              m_stats.unforcedMark++;
+            }
+        }
 
       NS_LOG_LOGIC ("Popped " << item);
 
