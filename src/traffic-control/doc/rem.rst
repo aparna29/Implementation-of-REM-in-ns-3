@@ -37,7 +37,7 @@ References
 Attributes
 ==========
 
-The key attributes that the RemQueue class holds include the following: 
+The key attributes that the RemQueueDisc class holds include the following: 
 
 * ``Mode:`` REM operating mode (BYTES or PACKETS). The default mode is PACKETS. 
 * ``QueueLimit:`` The maximum number of bytes or packets the queue can hold. The default value is 50 bytes / packets.
