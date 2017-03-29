@@ -47,7 +47,7 @@ public:
    * \param addr the address
    * \param protocol the protocol
    */
-  RemQueueDiscTestItem (Ptr<Packet> p, const Address & addr, uint16_t protocol);
+  RemQueueDiscTestItem (Ptr<Packet> p, const Address & addr, uint16_t protocol, bool ecnCapable);
   virtual ~RemQueueDiscTestItem ();
   virtual void AddHeader (void);
   virtual bool Mark (void);
@@ -58,10 +58,12 @@ private:
   RemQueueDiscTestItem (const RemQueueDiscTestItem &);
   /// assignment operator
   RemQueueDiscTestItem &operator = (const RemQueueDiscTestItem &);
+  bool m_ecnCapablePacket; ///< ECN capable packet?
 };
 
-RemQueueDiscTestItem::RemQueueDiscTestItem (Ptr<Packet> p, const Address & addr, uint16_t protocol)
-  : QueueDiscItem (p, addr, protocol)
+RemQueueDiscTestItem::RemQueueDiscTestItem (Ptr<Packet> p, const Address & addr, uint16_t protocol, bool ecnCapable)
+  : QueueDiscItem (p, addr, protocol),
+    m_ecnCapablePacket (ecnCapable)
 {
 }
 
@@ -77,6 +79,10 @@ RemQueueDiscTestItem::AddHeader (void)
 bool
 RemQueueDiscTestItem::Mark (void)
 {
+  if (m_ecnCapablePacket)
+    {
+      return true;
+    }
   return false;
 }
 
@@ -98,14 +104,14 @@ private:
    * \param size the size
    * \param nPkt the number of packets
    */
-  void Enqueue (Ptr<RemQueueDisc> queue, uint32_t size, uint32_t nPkt);
+  void Enqueue (Ptr<RemQueueDisc> queue, uint32_t size, uint32_t nPkt, bool ecnCapable);
   /**
    * Enqueue with delay function
    * \param queue the queue disc
    * \param size the size
    * \param nPkt the number of packets
    */
-  void EnqueueWithDelay (Ptr<RemQueueDisc> queue, uint32_t size, uint32_t nPkt);
+  void EnqueueWithDelay (Ptr<RemQueueDisc> queue, uint32_t size, uint32_t nPkt,bool ecnCapable);
   /**
   * Dequeue function
   * \param queue the queue disc
@@ -172,16 +178,16 @@ RemQueueDiscTestCase::RunRemTest (StringValue mode)
 
   queue->Initialize ();
   NS_TEST_EXPECT_MSG_EQ (queue->GetQueueSize (), 0 * modeSize, "There should be no packets in there");
-  queue->Enqueue (Create<RemQueueDiscTestItem> (p1, dest, 0));
+  queue->Enqueue (Create<RemQueueDiscTestItem> (p1, dest, 0, false));
   NS_TEST_EXPECT_MSG_EQ (queue->GetQueueSize (), 1 * modeSize, "There should be one packet in there");
-  queue->Enqueue (Create<RemQueueDiscTestItem> (p2, dest, 0));
+  queue->Enqueue (Create<RemQueueDiscTestItem> (p2, dest, 0, false));
   NS_TEST_EXPECT_MSG_EQ (queue->GetQueueSize (), 2 * modeSize, "There should be two packets in there");
-  queue->Enqueue (Create<RemQueueDiscTestItem> (p3, dest, 0));
-  queue->Enqueue (Create<RemQueueDiscTestItem> (p4, dest, 0));
-  queue->Enqueue (Create<RemQueueDiscTestItem> (p5, dest, 0));
-  queue->Enqueue (Create<RemQueueDiscTestItem> (p6, dest, 0));
-  queue->Enqueue (Create<RemQueueDiscTestItem> (p7, dest, 0));
-  queue->Enqueue (Create<RemQueueDiscTestItem> (p8, dest, 0));
+  queue->Enqueue (Create<RemQueueDiscTestItem> (p3, dest, 0, false));
+  queue->Enqueue (Create<RemQueueDiscTestItem> (p4, dest, 0, false));
+  queue->Enqueue (Create<RemQueueDiscTestItem> (p5, dest, 0, false));
+  queue->Enqueue (Create<RemQueueDiscTestItem> (p6, dest, 0, false));
+  queue->Enqueue (Create<RemQueueDiscTestItem> (p7, dest, 0, false));
+  queue->Enqueue (Create<RemQueueDiscTestItem> (p8, dest, 0, false));
   NS_TEST_EXPECT_MSG_EQ (queue->GetQueueSize (), 8 * modeSize, "There should be eight packets in there");
 
   Ptr<QueueDiscItem> item;
@@ -227,8 +233,8 @@ RemQueueDiscTestCase::RunRemTest (StringValue mode)
   NS_TEST_EXPECT_MSG_EQ (queue->SetAttributeFailSafe ("Target", UintegerValue (50)), true,
                          "Verify that we can actually set the attribute Target");
   queue->Initialize ();
-  EnqueueWithDelay (queue, pktSize, 400);
-  DequeueWithDelay (queue,0.012,400);
+  EnqueueWithDelay (queue, pktSize, 600,false);
+  DequeueWithDelay (queue,0.012,600);
 
   Simulator::Stop (Seconds (8.0));
   Simulator::Run ();
@@ -247,15 +253,15 @@ RemQueueDiscTestCase::RunRemTest (StringValue mode)
                          "Verify that we can actually set the attribute QueueLimit");
   NS_TEST_EXPECT_MSG_EQ (queue->SetAttributeFailSafe ("Alpha", DoubleValue (0.1)), true,
                          "Verify that we can actually set the attribute Alpha");
-  NS_TEST_EXPECT_MSG_EQ (queue->SetAttributeFailSafe ("Gamma", DoubleValue (0.001)), true,
+  NS_TEST_EXPECT_MSG_EQ (queue->SetAttributeFailSafe ("Gamma", DoubleValue (0.1)), true,
                          "Verify that we can actually set the attribute Gamma");
   NS_TEST_EXPECT_MSG_EQ (queue->SetAttributeFailSafe ("UpdateInterval", TimeValue (Seconds (0.002))), true,
                          "Verify that we can actually set the attribute UpdateInterval");
-  NS_TEST_EXPECT_MSG_EQ (queue->SetAttributeFailSafe ("Target", UintegerValue (150 * modeSize)), true,
+  NS_TEST_EXPECT_MSG_EQ (queue->SetAttributeFailSafe ("Target", UintegerValue ( 65)), true,
                          "Verify that we can actually set the attribute Target");
   queue->Initialize ();
-  EnqueueWithDelay (queue, pktSize, 400);
-  DequeueWithDelay (queue,0.012,400);
+  EnqueueWithDelay (queue, pktSize, 600,false);
+  DequeueWithDelay (queue,0.012,600);
 
   Simulator::Stop (Seconds (8.0));
   Simulator::Run ();
@@ -263,26 +269,79 @@ RemQueueDiscTestCase::RunRemTest (StringValue mode)
   uint32_t test3 = st.unforcedDrop;
   NS_TEST_EXPECT_MSG_LT (test3, test2, "Test 3 should have less unforced drops than test 2");
   NS_TEST_EXPECT_MSG_EQ (st.qLimDrop, 0, "There should be zero forced drops");
+
+  // test 4: Packets are ECN capable, but REM queue disc is not ECN enabled
+  queue = CreateObject<RemQueueDisc> ();
+  NS_TEST_EXPECT_MSG_EQ (queue->SetAttributeFailSafe ("Mode", mode), true,
+                         "Verify that we can actually set the attribute Mode");
+  NS_TEST_EXPECT_MSG_EQ (queue->SetAttributeFailSafe ("QueueLimit", UintegerValue (qSize)), true,
+                         "Verify that we can actually set the attribute QueueLimit");
+  NS_TEST_EXPECT_MSG_EQ (queue->SetAttributeFailSafe ("Alpha", DoubleValue (0.1)), true,
+                         "Verify that we can actually set the attribute Alpha");
+  NS_TEST_EXPECT_MSG_EQ (queue->SetAttributeFailSafe ("Gamma", DoubleValue (0.1)), true,
+                         "Verify that we can actually set the attribute Gamma");
+  NS_TEST_EXPECT_MSG_EQ (queue->SetAttributeFailSafe ("UpdateInterval", TimeValue (Seconds (0.002))), true,
+                         "Verify that we can actually set the attribute UpdateInterval");
+  NS_TEST_EXPECT_MSG_EQ (queue->SetAttributeFailSafe ("Target", UintegerValue (65)), true,
+                         "Verify that we can actually set the attribute Target");
+  queue->Initialize ();
+  EnqueueWithDelay (queue, pktSize, 600,true);
+  DequeueWithDelay (queue,0.012,600);
+
+  Simulator::Stop (Seconds (8.0));
+  Simulator::Run ();
+  st = StaticCast<RemQueueDisc> (queue)->GetStats ();
+  // REM queue disc is not ECN enabled, so there should be only unforced drops, no unforced marks
+  NS_TEST_EXPECT_MSG_NE (st.unforcedDrop, 0, "There should be some unforced drops");
+  NS_TEST_EXPECT_MSG_EQ (st.unforcedMark, 0, "There should be no unforced marks");
+
+  //test 5: Packets are ECN capable and REM queue disc is ECN enabled
+  queue = CreateObject<RemQueueDisc> ();
+  NS_TEST_EXPECT_MSG_EQ (queue->SetAttributeFailSafe ("Mode", mode), true,
+                         "Verify that we can actually set the attribute Mode");
+  NS_TEST_EXPECT_MSG_EQ (queue->SetAttributeFailSafe ("QueueLimit", UintegerValue (qSize)), true,
+                         "Verify that we can actually set the attribute QueueLimit");
+  NS_TEST_EXPECT_MSG_EQ (queue->SetAttributeFailSafe ("Alpha", DoubleValue (0.1)), true,
+                         "Verify that we can actually set the attribute Alpha");
+  NS_TEST_EXPECT_MSG_EQ (queue->SetAttributeFailSafe ("Gamma", DoubleValue (0.1)), true,
+                         "Verify that we can actually set the attribute Gamma");
+  NS_TEST_EXPECT_MSG_EQ (queue->SetAttributeFailSafe ("UpdateInterval", TimeValue (Seconds (0.002))), true,
+                         "Verify that we can actually set the attribute UpdateInterval");
+  NS_TEST_EXPECT_MSG_EQ (queue->SetAttributeFailSafe ("Target", UintegerValue (65)), true,
+                         "Verify that we can actually set the attribute Target");
+  NS_TEST_EXPECT_MSG_EQ (queue->SetAttributeFailSafe ("UseEcn", BooleanValue (true)), true,
+                         "Verify that we can actually set the attribute UseECN");
+  queue->Initialize ();
+  EnqueueWithDelay (queue, pktSize, 600,true);
+  DequeueWithDelay (queue,0.012,600);
+  Simulator::Stop (Seconds (8.0));
+  Simulator::Run ();
+
+  st = StaticCast<RemQueueDisc> (queue)->GetStats ();
+  // Packets are ECN capable, REM queue disc is ECN enabled; there should be only unforced marks, no unforced drops
+  NS_TEST_EXPECT_MSG_EQ (st.unforcedDrop, 0, "There should be no unforced drops");
+  NS_TEST_EXPECT_MSG_NE (st.unforcedMark, 0, "There should be some unforced marks");
+
 }
 
 void
-RemQueueDiscTestCase::Enqueue (Ptr<RemQueueDisc> queue, uint32_t size, uint32_t nPkt)
+RemQueueDiscTestCase::Enqueue (Ptr<RemQueueDisc> queue, uint32_t size, uint32_t nPkt,bool ecnCapable)
 {
   Address dest;
   for (uint32_t i = 0; i < nPkt; i++)
     {
-      queue->Enqueue (Create<RemQueueDiscTestItem> (Create<Packet> (size), dest, 0));
+      queue->Enqueue (Create<RemQueueDiscTestItem> (Create<Packet> (size), dest, 0, ecnCapable));
     }
 }
 
 void
-RemQueueDiscTestCase::EnqueueWithDelay (Ptr<RemQueueDisc> queue, uint32_t size, uint32_t nPkt)
+RemQueueDiscTestCase::EnqueueWithDelay (Ptr<RemQueueDisc> queue, uint32_t size, uint32_t nPkt,bool ecnCapable)
 {
   Address dest;
   double delay = 0.01;  // enqueue packets with delay
   for (uint32_t i = 0; i < nPkt; i++)
     {
-      Simulator::Schedule (Time (Seconds ((i + 1) * delay)), &RemQueueDiscTestCase::Enqueue, this, queue, size, 1);
+      Simulator::Schedule (Time (Seconds ((i + 1) * delay)), &RemQueueDiscTestCase::Enqueue, this, queue, size, 1, ecnCapable);
     }
 }
 

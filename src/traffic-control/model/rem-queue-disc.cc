@@ -252,7 +252,6 @@ bool RemQueueDisc::DropEarly (Ptr<QueueDiscItem> item)
   double p = m_dropProb;
   bool earlyDrop = true;
   double u = m_uv->GetValue ();
-  //NS_LOG_LOGIC ("\t Drop Probability  " << m_dropProb << " u :: " << u);
 
   if (u > p)
     {
@@ -324,6 +323,7 @@ RemQueueDisc::RunUpdateRule (void)
   // in is the number of bytes (if Queue mode is in bytes) or packets (otherwise)
   // arriving at the link (input rate) during one update time interval
   in = m_count;
+
   // in_avg is the low pass filtered input rate
   in_avg = m_avgInputRate;
 
